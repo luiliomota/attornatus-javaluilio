@@ -10,6 +10,7 @@ public class EnderecoDto {
     private Integer numero;
     private String cidade;
     private Long idPessoa;
+    private Boolean principal;
 
     public EnderecoDto(Endereco endereco) {
         this.id = endereco.getId();
@@ -18,6 +19,7 @@ public class EnderecoDto {
         this.numero = endereco.getNumero();
         this.cidade = endereco.getCidade();
         this.idPessoa = endereco.getPessoa().getId();
+        this.principal = endereco.getPrincipal();
     }
 
     public static Page<EnderecoDto> converter(Page<Endereco> enderecos) {
@@ -70,5 +72,13 @@ public class EnderecoDto {
 
     public void setIdPessoa(Long idPessoa) {
         this.idPessoa = idPessoa;
+    }
+
+    public Boolean getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(Boolean principal) {
+        this.principal = principal;
     }
 }

@@ -29,7 +29,7 @@ public class EnderecoController {
     @PostMapping("/pessoa/{idPessoa}")
     public ResponseEntity<EnderecoDto> criarEndereco (@PathVariable Long idPessoa, @RequestBody EnderecoForm form, UriComponentsBuilder uriComponentsBuilder){
         if(pessoaRepository.existsById(idPessoa)){
-            Endereco endereco = form.criar(idPessoa, pessoaRepository);
+            Endereco endereco = form.criar(idPessoa, enderecoRepository, pessoaRepository);
             enderecoRepository.save(endereco);
             URI uri = uriComponentsBuilder.path("/api/endereco/{id}").buildAndExpand(endereco.getId()).toUri();
             return ResponseEntity.created(uri).body(new EnderecoDto(endereco));
@@ -39,7 +39,7 @@ public class EnderecoController {
 
     //Listar enderecos por pessoa
     @GetMapping("/pessoa/{idPessoa}")
-    public ResponseEntity<Page<EnderecoDto>> listarEnderecosPorPessoa (@PathVariable Long idPessoa, Pageable paginacao){
+    public ResponseEntity<Page<EnderecoDto>> listarEnderecosPorPessoa(@PathVariable Long idPessoa, Pageable paginacao){
         if(pessoaRepository.existsById(idPessoa)){
             Page<Endereco> enderecos = enderecoRepository.findByPessoa_Id(idPessoa, paginacao);
             return ResponseEntity.ok().body(EnderecoDto.converter(enderecos));
@@ -67,8 +67,8 @@ public class EnderecoController {
 
     //Consultar endereco por id
     @GetMapping("/{id}")
-    public ResponseEntity<EnderecoDto> consultarEndereco (@PathVariable Long id){
-        if(enderecoRepository.existsById(id)){
+    public ResponseEntity<EnderecoDto> consultarEndereco(@PathVariable Long id) {
+        if(enderecoRepository.existsById(id)) {
             Endereco endereco = enderecoRepository.getReferenceById(id);
             return ResponseEntity.ok(new EnderecoDto(endereco));
         }

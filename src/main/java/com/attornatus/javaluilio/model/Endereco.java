@@ -10,14 +10,16 @@ public class Endereco {
     private String cep;
     private Integer numero;
     private String cidade;
+    private Boolean principal;
     @ManyToOne(fetch = FetchType.LAZY)
     private Pessoa pessoa;
 
-    public Endereco(String logradouro, String cep, Integer numero, String cidade) {
+    public Endereco(String logradouro, String cep, Integer numero, String cidade, Boolean principal) {
         this.logradouro = logradouro;
         this.cep = cep;
         this.numero = numero;
         this.cidade = cidade;
+        this.principal = principal;
     }
 
     public Endereco() {
@@ -69,5 +71,13 @@ public class Endereco {
 
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
+    }
+
+    public Boolean getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(Boolean principal) {
+        this.principal = principal;
     }
 }

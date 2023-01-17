@@ -17,13 +17,14 @@ public class PessoaDto {
         this.id = pessoa.getId();
         this.nome = pessoa.getNome();
         this.dataNascimento = pessoa.getDataNascimento();
-        if(pessoa.getEnderecos() != null)
-           pessoa.getEnderecos().forEach(
-                   endereco -> this.enderecos.add(new EnderecoDto(endereco))
-           );
+        if (pessoa.getEnderecos() != null) {
+            pessoa.getEnderecos().forEach(
+                    endereco -> this.enderecos.add(new EnderecoDto(endereco))
+            );
+        }
     }
 
-    public static Page<PessoaDto> converter (Page<Pessoa> pessoas){
+    public static Page<PessoaDto> converter(Page<Pessoa> pessoas) {
         return pessoas.map(PessoaDto::new);
     }
 

@@ -8,7 +8,7 @@ public class PessoaForm {
     private String nome;
     private String dataNascimento;
 
-    public Pessoa criar (){
+    public Pessoa criar() {
         Pessoa pessoa = new Pessoa(this.nome, LocalDate.parse(this.dataNascimento));
         return pessoa;
     }
