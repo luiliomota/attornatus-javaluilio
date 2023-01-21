@@ -61,6 +61,4 @@ public class PessoaController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
 }

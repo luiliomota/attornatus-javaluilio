@@ -28,12 +28,14 @@ public class EnderecoControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    //Teste para criar endereco para pessoa
     @Test
-    public void deveriaRetornar201AoCriarNovoEnderecoParaUmIdDePessoa() throws Exception {
+    public void deveRetornarStatus201ELogradouroDeEnderecoCriadoParaPessoaNoJsonDeResposta() throws Exception {
         Pessoa pessoa = new Pessoa();
         pessoaRepository.save(pessoa);
+        String logradouro = new String("Rua um");
         URI uri = new URI("/api/endereco/pessoa/"+pessoa.getId());
-        String json = "{\"logradouro\":\"Rua Um\",\"cep\":\"77000000\",\"numero\":\"100\",\"cidade\":\"Brasilia\",\"principal\":\"true\"}";
+        String json = "{\"logradouro\":\"" + logradouro + "\",\"cep\":\"77000000\",\"numero\":\"100\",\"cidade\":\"Brasilia\",\"principal\":\"true\"}";
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post(uri)
@@ -41,13 +43,20 @@ public class EnderecoControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers
                         .status()
-                        .is(201));
+                        .is(201))
+                .andExpect(MockMvcResultMatchers
+                        .content()
+                        .json("{\"logradouro\": \"" + logradouro + "\"}"));
     }
 
+    //Teste para listar enderecos da pessoa
     @Test
-    public void deveriaRetornarStatus200AoRequisitarListaDeEnderecosPorIdDePessoa() throws Exception {
+    public void deveRetornarStatus200EConfirmacaoDeListaDaPessoaNaoVaziaNoJsonDeResposta() throws Exception {
         Pessoa pessoa = new Pessoa();
+        Endereco endereco = new Endereco();
+        endereco.setPessoa(pessoa);
         pessoaRepository.save(pessoa);
+        enderecoRepository.save(endereco);
         URI uri = new URI("/api/endereco/pessoa/"+pessoa.getId());
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -55,43 +64,59 @@ public class EnderecoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers
                         .status()
-                        .is(200));
+                        .is(200))
+                .andExpect(MockMvcResultMatchers
+                        .content()
+                        .json("{\"empty\": false}"));
     }
 
+    //Teste para informar qual endereço é o principal da pessoa
     @Test
-    public void deveriaRetornarStatus200AoRequisitarListaDeEnderecos() throws Exception {
+    public void deveRetornarStatus200EIdDoEnderecoPrincipalInformadoNoJsonDeResposta() throws Exception {
+        Pessoa pessoa = new Pessoa();
+        pessoaRepository.save(pessoa);
+        Endereco endereco = new Endereco();
+        endereco.setPessoa(pessoa);
+        enderecoRepository.save(endereco);
+        String json = "{\"principal\":\"true\"}";
+        URI uri = new URI("/api/endereco/"+endereco.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put(uri)
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers
+                        .status()
+                        .is(200))
+                .andExpect(MockMvcResultMatchers
+                        .content()
+                        .json("{\"id\": " + endereco.getId() + "}"));
+    }
+
+    //Teste para listar todos enderecos cadastrados
+    @Test
+    public void deveRetornarStatus200EConfirmacaoDeListaNaoVaziaNoJsonDeResposta() throws Exception {
+        Pessoa pessoa = new Pessoa();
+        pessoaRepository.save(pessoa);
+        Endereco endereco = new Endereco();
+        endereco.setPessoa(pessoa);
+        enderecoRepository.save(endereco);
         URI uri = new URI("/api/endereco/");
-        mockMvc.perform(MockMvcRequestBuilders
-                .get(uri)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers
-                        .status()
-                        .is(200));
-    }
-
-    @Test
-    public void deveriaRetornarStatus200AoRequisitarAlteracaoDeAtributosDeEndereco() throws Exception {
-        Pessoa pessoa = new Pessoa();
-        pessoaRepository.save(pessoa);
-        Endereco endereco = new Endereco();
-        endereco.setPessoa(pessoa);
-        enderecoRepository.save(endereco);
-        String json = "{}";
-        System.out.println(endereco.getId());
-        URI uri = new URI("/api/endereco/"+endereco.getId());
 
         mockMvc.perform(MockMvcRequestBuilders
-                .put(uri)
-                .content(json)
-                .contentType(MediaType.APPLICATION_JSON)
-                )
+                        .get(uri)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers
                         .status()
-                        .is(200));
+                        .is(200))
+                .andExpect(MockMvcResultMatchers
+                        .content()
+                        .json("{\"empty\": false}"));
     }
 
+    //Teste para consultar endereco por id
     @Test
-    public void deveriaRetornarStatus200AoRequisitarEnderecoPorId() throws Exception {
+    public void deveRetornarStatus200EIdDoEnderecoConsultadoNoJsonDeResposta() throws Exception {
         Pessoa pessoa = new Pessoa();
         pessoaRepository.save(pessoa);
         Endereco endereco = new Endereco();
@@ -100,10 +125,13 @@ public class EnderecoControllerTest {
         URI uri = new URI("/api/endereco/"+endereco.getId());
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get(uri)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .get(uri)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers
                         .status()
-                        .is(200));
+                        .is(200))
+                .andExpect(MockMvcResultMatchers
+                        .content()
+                        .json("{\"id\": " + endereco.getId() + "}"));
     }
 }

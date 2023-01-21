@@ -18,6 +18,7 @@ public class EnderecoForm {
         Pessoa pessoa = pessoaRepository.getReferenceById(idPessoa);
         if(this.principal) {
             List<Endereco> enderecos = enderecoRepository.findAllByPessoa_IdAndPrincipal(idPessoa, true);
+
             enderecos.forEach(enderecoItem -> {
                 enderecoItem.setPrincipal(false);
             });
